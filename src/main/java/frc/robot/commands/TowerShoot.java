@@ -7,11 +7,11 @@ import frc.robot.Constants.HoodConstants;
 import frc.robot.Constants.ShooterConstants;
 import frc.robot.Constants.HopperConstants.HopperState;
 import frc.robot.Constants.NeckConstants.NeckState;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Neck;
-import frc.robot.subsystems.Shooter;
+import frc.robot.mechanisms.Hood;
+import frc.robot.mechanisms.Hopper;
+import frc.robot.mechanisms.Intake;
+import frc.robot.mechanisms.Neck;
+import frc.robot.mechanisms.Shooter;
 
 public class TowerShoot{
     public static Command cmd(Shooter shooter, Hood hood, Neck neck, Intake intake, Hopper hopper){

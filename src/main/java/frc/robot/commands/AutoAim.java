@@ -11,13 +11,13 @@ import frc.lib.AutoAimCalculator;
 import frc.robot.Constants.HopperConstants.HopperState;
 import frc.robot.Constants.LEDConstants.LEDStatus;
 import frc.robot.Constants.NeckConstants.NeckState;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.LEDs;
-import frc.robot.subsystems.Neck;
-import frc.robot.subsystems.Shooter;
+import frc.robot.mechanisms.Drivetrain;
+import frc.robot.mechanisms.Hood;
+import frc.robot.mechanisms.Hopper;
+import frc.robot.mechanisms.Intake;
+import frc.robot.mechanisms.LEDs;
+import frc.robot.mechanisms.Neck;
+import frc.robot.mechanisms.Shooter;
 
 public class AutoAim {
     public static Command cmd(

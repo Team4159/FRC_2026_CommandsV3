@@ -33,14 +33,14 @@ import frc.robot.Constants.NeckConstants.NeckState;
 import frc.robot.commands.AutoAim;
 import frc.robot.commands.HubShoot;
 import frc.robot.commands.TowerShoot;
-import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Hood;
-import frc.robot.subsystems.LEDs;
-import frc.robot.subsystems.Neck;
-import frc.robot.subsystems.PhotonVision;
-import frc.robot.subsystems.Hopper;
-import frc.robot.subsystems.Intake;
-import frc.robot.subsystems.Shooter;
+import frc.robot.mechanisms.Drivetrain;
+import frc.robot.mechanisms.Hood;
+import frc.robot.mechanisms.Hopper;
+import frc.robot.mechanisms.Intake;
+import frc.robot.mechanisms.LEDs;
+import frc.robot.mechanisms.Neck;
+import frc.robot.mechanisms.PhotonVision;
+import frc.robot.mechanisms.Shooter;
 
 public class RobotContainer {
         private final CommandGamepad primaryController = new CommandGamepad(

@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.mechanisms;
 
 import org.wpilib.hardware.led.AddressableLED;
 import org.wpilib.hardware.led.AddressableLEDBuffer;

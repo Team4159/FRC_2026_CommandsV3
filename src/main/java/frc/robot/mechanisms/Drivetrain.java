@@ -1,4 +1,4 @@
-package frc.robot.subsystems;
+package frc.robot.mechanisms;
 
 import static frc.robot.Constants.OperatorConstants.*;
 import static org.wpilib.units.Units.Degrees;
