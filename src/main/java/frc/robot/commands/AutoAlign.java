@@ -1,0 +1,87 @@
+// package frc.robot.commands;
+
+// import com.ctre.phoenix6.swerve.SwerveDrivetrain.SwerveDriveState;
+// import com.therekrab.autopilot.APTarget;
+// import com.therekrab.autopilot.Autopilot.APResult;
+
+// import org.wpilib.math.geometry.Rotation2d;
+// import org.wpilib.units.measure.LinearVelocity;
+// import org.wpilib.driverstation.DriverStation;
+// import org.wpilib.driverstation.DriverStation.Alliance;
+// import org.wpilib.command2.Command;
+// import frc.lib.PoseUtil;
+// import frc.robot.Constants.AutoConstants;
+// import frc.robot.Constants.AlignConstants.TowerAlignGoal;
+// import frc.robot.subsystems.Drivetrain;
+
+// public class AutoAlign extends Command {
+//     private final Drivetrain drivetrain;
+//     private final TowerAlignGoal goal;
+
+//     private APTarget currentTarget;
+//     private int progress;
+
+//     public AutoAlign(Drivetrain drivetrain, TowerAlignGoal goal) {
+//         this.drivetrain = drivetrain;
+//         this.goal = goal;
+//         addRequirements(drivetrain);
+//     }
+
+//     @Override
+//     public void initialize() {
+//         progress = 0;
+//         currentTarget = getNextTarget(progress);
+//     }
+
+//     @Override
+//     public void execute() {
+//         boolean atTarget = AutoConstants.kAutopilotAlignController.atTarget(drivetrain.getState().Pose, currentTarget);
+//         boolean targetIsIntermediate = (progress < goal.targets.length - 1);
+//         if (atTarget && targetIsIntermediate) {
+//             progress++;
+//             currentTarget = getNextTarget(progress);
+//         }
+
+//         if (atTarget && !targetIsIntermediate) {
+//             idle();
+//         } else {
+//             alignToTarget();
+//         }
+//     }
+
+//     @Override
+//     public boolean isFinished() {
+//         return false;
+//     }
+
+//     private void idle() {
+//         drivetrain.setControl(drivetrain.idleDrive);
+//     }
+
+//     private void alignToTarget() {
+//         SwerveDriveState drivetrainState = drivetrain.getState();
+//         APResult result = AutoConstants.kAutopilotAlignController.calculate(drivetrainState.Pose, drivetrainState.Speeds,
+//                 currentTarget);
+
+//         LinearVelocity velocityX = result.vx();
+//         LinearVelocity velocityY = result.vy();
+//         Rotation2d targetDirection = result.targetAngle();
+
+//         drivetrain.setControl(
+//                 drivetrain.trajectoryFacingAngleDrive
+//                         .withVelocityX(velocityX)
+//                         .withVelocityY(velocityY)
+//                         .withTargetDirection(targetDirection));
+//     }
+
+//     private APTarget getNextTarget(int progress) {
+//         APTarget nextTarget = goal.targets[progress];
+//         if (DriverStation.getAlliance().orElse(Alliance.Blue).equals(Alliance.Red)) {
+//             nextTarget = nextTarget.withReference(PoseUtil.flipPoseAlongMiddleXY(nextTarget.getReference()));
+//             if (nextTarget.getEntryAngle().isPresent()) {
+//                 nextTarget = nextTarget.withEntryAngle(nextTarget.getEntryAngle().get().plus(Rotation2d.k180deg));
+//             }
+//         }
+//         return nextTarget;
+//     }
+// }

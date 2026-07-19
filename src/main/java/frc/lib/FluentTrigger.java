@@ -1,0 +1,111 @@
+package frc.lib;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.wpilib.command3.Command;
+import org.wpilib.command3.Scheduler;
+import org.wpilib.command3.Trigger;
+
+public class FluentTrigger {
+    private class TriggerState {
+        private final int priority;
+
+        public TriggerState(int priority) {
+            this.priority = priority;
+        }
+    }
+
+    // the most recently appended state is prioritized first
+    private final ArrayList<TriggerState> stateList = new ArrayList<>();
+    private final Map<TriggerState, Command> stateCommandMap = new HashMap<>();
+
+    private Command activeCommand;
+    private Command defaultCommand;
+
+    private FluentTrigger() {
+    }
+
+    public static FluentTrigger build() {
+        return new FluentTrigger();
+    }
+
+    public FluentTrigger setDefault(Command defaultCommand) {
+        if (this.defaultCommand != null) {
+            throw new IllegalStateException("FluentTrigger default command already set");
+        }
+        this.defaultCommand = defaultCommand;
+        this.activeCommand = defaultCommand;
+        updateState();
+        return this;
+    }
+
+    public FluentTrigger bind(int priority, Trigger trigger, Command command) {
+        TriggerState state = new TriggerState(priority);
+        trigger.onTrue(Command.noRequirements(coroutine -> {
+            addQueue(state);
+            coroutine.park();
+        }).named("FluentTrigger addQueue"));
+        trigger.onFalse(Command.noRequirements(coroutine -> {
+            removeQueue(state);
+            coroutine.park();
+        }).named("FluentTrigger addQueue"));
+        stateCommandMap.put(state, command);
+        return this;
+    }
+
+    public FluentTrigger bind(Trigger trigger, Command command) {
+        return bind(0, trigger, command);
+    }
+
+    private void addQueue(TriggerState state) {
+        if (stateList.contains(state)) {
+            return;
+        }
+        stateList.add(state);
+        updateState();
+    }
+
+    private void removeQueue(TriggerState state) {
+        if (!stateList.contains(state)) {
+            return;
+        }
+        stateList.remove(state);
+        updateState();
+    }
+
+    private void updateState() {
+        if (stateList.size() == 0) {
+            if (activeCommand != null && Scheduler.getDefault().isScheduled(activeCommand)) {
+                Scheduler.getDefault().cancel(activeCommand);
+            }
+            if (defaultCommand != null && !Scheduler.getDefault().isScheduled(defaultCommand)) {
+                Scheduler.getDefault().schedule(defaultCommand);
+                activeCommand = defaultCommand;
+            }
+            return;
+        }
+
+        TriggerState nextState = stateList.get(stateList.size() - 1);
+        for (int i = stateList.size() - 2; i >= 0; i--) {
+            TriggerState nextStateCandidate = stateList.get(i);
+            if (nextStateCandidate.priority <= nextState.priority) {
+                continue;
+            }
+            nextState = nextStateCandidate;
+        }
+
+        Command oldActiveCommand = activeCommand;
+        activeCommand = stateCommandMap.get(nextState);
+
+        boolean activeCommandChanged = (activeCommand != oldActiveCommand);
+        if (activeCommandChanged && oldActiveCommand != null) {
+            Scheduler.getDefault().cancel(oldActiveCommand);
+        }
+
+        if (!Scheduler.getDefault().isScheduled(activeCommand)) {
+            Scheduler.getDefault().schedule(activeCommand);
+        }
+    }
+}
